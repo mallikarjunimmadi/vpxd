@@ -5,13 +5,29 @@
 #Defining Functions
 ##########################################
 
-function Get-AdvancedSystemSetting{ param( [Parameter(Mandatory=$true,ValueFromPipeline=$true)] [VMware.VimAutomation.ViCore.Impl.V1.VIObjectImpl]$cluster, [Parameter(Mandatory=$true)] [ValidateNotNullOrEmpty()] [String[]]$advSetting ) Get-Cluster $cluster | Get-VMHost | Where {$_.ConnectionState -notlike "notresponding"}| Get-AdvancedSetting -Name $advSetting| select entity,name,value | ft -AutoSize }
+function Get-AdvancedSystemSetting{
+param(
+[Parameter(Mandatory=$true,ValueFromPipeline=$true)]
+[VMware.VimAutomation.ViCore.Impl.V1.VIObjectImpl]$cluster,
+[Parameter(Mandatory=$true)] [ValidateNotNullOrEmpty()]
+[String[]]$advSetting
+)
+Get-Cluster $cluster | Get-VMHost | Where {$_.ConnectionState -notlike "notresponding"}| Get-AdvancedSetting -Name $advSetting| Select-Object entity,name,value | Format-Table -AutoSize
+}
 
-function Set-AdvancedSystemSetting{ param( [Parameter(Mandatory=$true,ValueFromPipeline=$true)] [VMware.VimAutomation.ViCore.Impl.V1.VIObjectImpl]$cluster, [Parameter(Mandatory=$true)] [ValidateNotNullOrEmpty()] [String[]]$advSetting, [Parameter(Mandatory=$true)] [ValidateNotNullOrEmpty()]$advValue )
-
+function Set-AdvancedSystemSetting{
+param(
+[Parameter(Mandatory=$true,ValueFromPipeline=$true)]
+[VMware.VimAutomation.ViCore.Impl.V1.VIObjectImpl]$cluster,
+[Parameter(Mandatory=$true)]
+[ValidateNotNullOrEmpty()] [String[]]$advSetting,
+[Parameter(Mandatory=$true)]
+[ValidateNotNullOrEmpty()]$advValue
+)
 $esxHosts= Get-Cluster $cluster | Get-VMHost | Where {$_.ConnectionState -notlike "notresponding"}
 Write-Host "Applying Configuration Changes" -ForegroundColor Yellow
-foreach ($esx in $esxHosts) { Get-AdvancedSetting -Entity $esx -Name $advSetting | where {$_.Value -notlike $advValue} |Set-AdvancedSetting -Value $advValue -Confirm:$false } Write-Host Write-Host "Values after configuration changes" -ForegroundColor Green Get-Cluster $cluster | Get-AdvancedSystemSetting -advSetting $advSetting
+foreach ($esx in $esxHosts) { Get-AdvancedSetting -Entity $esx -Name $advSetting | where {$_.Value -notlike $advValue} |Set-AdvancedSetting -Value $advValue -Confirm:$false }
+Write-Host Write-Host "Values after configuration changes" -ForegroundColor Green Get-Cluster $cluster | Get-AdvancedSystemSetting -advSetting $advSetting
 }
 
 ###############################################
