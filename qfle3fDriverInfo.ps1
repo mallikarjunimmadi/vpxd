@@ -3,7 +3,7 @@
 
 $datetime=Get-Date -format "MMddyyyy-HHmmss"
 $outFilePath="C:\Users\mallikarjun\Documents\qfle3fDriverInfo-$datetime.csv"
-$ehosts = (Get-VMHost).Name
+$ehosts = (Get-VMHost).Name | where {($_.ConnectionState -notlike "notresponding")}
 Write-Output "HostName,AcceptanceLevel,CreationDate,ID,InstallDate,Name,Status,Vendor,Version" | Out-File $outFilePath
 foreach($ehost in $ehosts) {
 $esxcli = Get-ESXCli -VMHost $ehost
