@@ -1,4 +1,4 @@
 $vCenterServer = Read-Host "Enter vCenter Server FQDN or IP Address"
 Connect-VIserver $vCenterServer
-$esxHosts= Get-Cluster "Standalone-Cluster" | Get-VMHost
+$esxHosts= Get-Cluster "Standalone-Cluster" | Get-VMHost | where {($_.ConnectionState -notlike "notresponding")}
 foreach ($esx in $esxHosts) { Get-AdvancedSetting -Entity $esx -Name NFS.MaxQueueDepth | Set-AdvancedSetting -Value '64' -Confirm:$false }
