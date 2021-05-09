@@ -1,6 +1,7 @@
 #Author: Mallikarjun Immadi
 #https://www.vpxd.in
-
+$vCenterServer = Read-Host "Enter vCenter Server FQDN or IP Address"
+Connect-VIServer $vCenterServer
 $datetime=Get-Date -format "MMddyyyy-HHmmss"
 $outFilePath="C:\Users\mallikarjun\Documents\qfle3fDriverInfo-$datetime.csv"
 $ehosts = (Get-VMHost).Name | where {($_.ConnectionState -notlike "notresponding")}
