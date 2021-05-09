@@ -23,6 +23,9 @@ $cluster = 'Standalone-Cluster'
 $advSetting = 'Vpx.Vpxa.config.workingDir'
 $advValue = '/var/log/vmware/vpx'
 
+#Connecting to vCenter Server
+$vCenterServer = Read-Host "Enter vCenter Server FQDN or IP Address"
+Connect-VIServer $vCenterServer
 #Get the current configured values
 Get-Cluster $cluster | Get-AdvancedSystemSetting -advSetting $advSetting
 
